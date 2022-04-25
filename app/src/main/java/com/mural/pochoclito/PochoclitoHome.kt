@@ -94,12 +94,12 @@ fun PochoclitoNavHost(
             )
         }
         composable(
-            "$detailsName/{key_item_id}/{ket_item_type}",
+            "$detailsName/{key_item_id}/{key_item_type}",
             arguments = listOf(
                 navArgument("key_item_id") {
                     type = NavType.LongType
                 },
-                navArgument("ket_item_type") {
+                navArgument("key_item_type") {
                     type = NavType.IntType
                 }
             ),
@@ -124,13 +124,11 @@ fun PochoclitoNavHost(
                 }
             },
         ) { entry -> // Look up "name" in NavBackStackEntry's arguments
-            val itemType = entry.arguments?.getInt("key_item_type") ?: 0
+            val itemType = entry.arguments?.getInt("key_item_type") ?: -1
             val itemId = entry.arguments?.getLong("key_item_id")
             itemId?.let {
                 DetailsScreen(
                     Watchable.values()[itemType],
-                    movieViewModel,
-                    tvShowsViewModel,
                     it,
                     navController = navController
                 )

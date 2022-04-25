@@ -1,12 +1,16 @@
 package com.mural.pochoclito.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -22,8 +26,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun TvShowsScreen(tvShowsViewModel: TvShowsViewModel, navController: NavController) {
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
+
     Column(Modifier.background(Color.DarkGray)) {
-        TvShowList(viewModel = tvShowsViewModel, navController = navController)
+        SearchView(textState)
+        Box() {
+            TvShowList(viewModel = tvShowsViewModel, navController = navController)
+            SearchList(navController = navController, state = textState, itemType = Watchable.TV)
+        }
     }
 }
 
@@ -49,7 +59,7 @@ fun TvShowInfoList(
         items(tvShowsListItemsData) { tvShow ->
             tvShow?.let {
                 ItemRow(
-                    title = "${tvShow.name} (${tvShow.tvId})",
+                    title = "${tvShow.name}",
                     subtitle = "${stringResource(id = R.string.popularity)}: ${tvShow.popularity?.toInt()} <> ${
                         stringResource(
                             id = R.string.top_rated

@@ -3,6 +3,7 @@ package com.mural.domain
 data class Movie(
     val movieId: Long,
     val title: String? = "",
+    val overview: String?,
     val backdropPath: String? = "",
     val popularity: Double? = 0.0,
     val voteAverage: Double? = 0.0,

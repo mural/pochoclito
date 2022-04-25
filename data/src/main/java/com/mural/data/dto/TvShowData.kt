@@ -9,6 +9,7 @@ import com.mural.domain.TvShow
 data class TvShowData(
     @PrimaryKey @SerializedName("id") val tvId: Long,
     @SerializedName("name") val name: String? = "",
+    @SerializedName("overview") val overview: String? = "",
     @SerializedName("backdrop_path") val backdropPath: String? = "",
     @SerializedName("popularity") val popularity: Double? = 0.0,
     @SerializedName("vote_average") val voteAverage: Double? = 0.0,
@@ -33,6 +34,7 @@ fun TvShowData.toDomain(videos: List<VideoData>): TvShow {
     return TvShow(
         tvId = tvId,
         name = name,
+        overview = overview,
         backdropPath = backdropPath,
         popularity = popularity,
         voteAverage = voteAverage,

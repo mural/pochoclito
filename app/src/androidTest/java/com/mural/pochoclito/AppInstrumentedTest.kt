@@ -53,7 +53,7 @@ class AppInstrumentedTest {
         ).assertIsDisplayed().performClick()
 
         composeTestRule.onNodeWithText(
-            text = "Video",
+            text = "Video promocional",
             substring = true,
             ignoreCase = true,
             useUnmergedTree = true

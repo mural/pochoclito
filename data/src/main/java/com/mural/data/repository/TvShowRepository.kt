@@ -21,11 +21,11 @@ class TvShowRepository @Inject constructor(
 ) : BaseApiResponse() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    suspend fun getTvShow(TvShowId: Long): Flow<NetworkResult<TvShowWithVideos>> {
+    suspend fun getTvShow(tvShowId: Long): Flow<NetworkResult<TvShowWithVideos>> {
         Log.d("Repository", "Call cached")
-        val cachedTvShow = TvShowDao.getTvShow(TvShowId).first()
+        val cachedTvShow = TvShowDao.getTvShow(tvShowId).first()
         val cachedFlow = flow<NetworkResult<TvShowWithVideos>> {
-            TvShowDao.getTvShowAndVideos(TvShowId).collect {
+            TvShowDao.getTvShowAndVideos(tvShowId).collect {
                 Log.d("Repository", "Emitting cached result")
                 emit(NetworkResult.Cached(it))
             }
@@ -34,10 +34,10 @@ class TvShowRepository @Inject constructor(
         val networkFlow = flow {
             Log.d("Repository", "Call network")
             val resultTvShows = safeApiCallWithData(data = cachedTvShow) {
-                remoteDataSource.getTvShowDetail(TvShowId)
+                remoteDataSource.getTvShowDetail(tvShowId)
             }
             val resultVideos = safeApiCall() {
-                remoteDataSource.getTvShowVideos(TvShowId)
+                remoteDataSource.getTvShowVideos(tvShowId)
             }
 
             val resultTvShowsWithVideo: NetworkResult<TvShowWithVideos> =
@@ -68,7 +68,7 @@ class TvShowRepository @Inject constructor(
                         resultVideos.data?.run {
                             Log.d("Repository", "Saving videoData network success into database")
                             this.results.forEach {
-                                it.movieId = TvShowId
+                                it.tvShowId = tvShowId
                             }
                             videoDao.insertVideos(this.results)
                         }

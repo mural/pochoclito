@@ -9,6 +9,7 @@ import com.mural.domain.Movie
 data class MovieData(
     @PrimaryKey @SerializedName("id") val movieId: Long,
     @SerializedName("title") val title: String? = "",
+    @SerializedName("overview") val overview: String? = "",
     @SerializedName("backdrop_path") val backdropPath: String? = "",
     @SerializedName("popularity") val popularity: Double? = 0.0,
     @SerializedName("vote_average") val voteAverage: Double? = 0.0,
@@ -33,6 +34,7 @@ fun MovieData.toDomain(videos: List<VideoData>): Movie {
     return Movie(
         movieId = movieId,
         title = title,
+        overview = overview,
         backdropPath = backdropPath,
         popularity = popularity,
         voteAverage = voteAverage,

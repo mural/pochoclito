@@ -13,15 +13,18 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.accompanist.coil.rememberCoilPainter
 import com.mural.data.repository.NetworkResult
@@ -38,14 +41,20 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.You
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import kotlin.reflect.KFunction0
 
+const val ND_STRING = "n/d"
+
+@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun DetailsScreen(
     watchable: Watchable,
-    movieViewModel: MovieViewModel,
-    tvShowsViewModel: TvShowsViewModel,
     itemId: Long, navController: NavController
 ) {
+    val movieViewModel: MovieViewModel = hiltViewModel()
+    val tvShowsViewModel: TvShowsViewModel = hiltViewModel()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    keyboardController?.hide()
+
     val state by
     if (Watchable.MOVIE == watchable) movieViewModel.response.observeAsState(initial = NetworkResult.Loading())
     else tvShowsViewModel.response.observeAsState(
@@ -116,24 +125,31 @@ fun DetailItem(
     navigateUp: () -> Boolean
 ) {
     val scrollState = rememberScrollState()
-    movie?.let {
+    val title = if (Watchable.MOVIE == watchable) movie?.title else tv?.name
+    val overview = if (Watchable.MOVIE == watchable) movie?.overview else tv?.overview
+    val image = if (Watchable.MOVIE == watchable) movie?.backdropPath else tv?.backdropPath
+    val date = if (Watchable.MOVIE == watchable) movie?.releaseDate else tv?.firstAirDate
+    val videos = if (Watchable.MOVIE == watchable) movie?.videos else tv?.videos
+
+    title?.let {
         Column(
             Modifier
                 .padding(bottom = 24.dp)
                 .verticalScroll(state = scrollState)
         ) {
             Box() {
-                movie.backdropPath?.let {
+                image?.let {
                     if (it.isNotBlank()) {
-                        val image = rememberCoilPainter(
-                            request = "${IMAGE_BASE_URL}${movie.backdropPath}",
+                        val imageLoaded = rememberCoilPainter(
+                            request = "${IMAGE_BASE_URL}${image}",
                             fadeIn = true
                         )
                         Image(
-                            painter = image,
+                            painter = imageLoaded,
                             contentDescription = null,
                             modifier = Modifier
                                 .width(480.dp)
+                                .heightIn(min = 100.dp, max = 300.dp)
                                 .clip(shape = RoundedCornerShape(0.dp))
                                 .padding(horizontal = 0.dp, vertical = 2.dp),
                             contentScale = ContentScale.Crop
@@ -145,47 +161,102 @@ fun DetailItem(
             }
 
             Text(
-                text = "Fecha estreno: 2032-13-03",
+                text = stringResource(id = R.string.date_title),
+                fontSize = 20.sp,
+                textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
+                color = Color.White,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 6.dp)
+            )
+
+            Text(
+                text = date ?: ND_STRING,
                 fontSize = 16.sp,
                 textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)
+            )
+
+            if (Watchable.MOVIE == watchable) {
+                Text(
+                    text = stringResource(id = R.string.budget_title),
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Start,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 6.dp)
+                )
+
+                Text(
+                    text = if (movie?.budget == 0L) ND_STRING else "${movie?.budget ?: ND_STRING}",
+                    fontSize = 16.sp,
+                    textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)
+                )
+            } else {
+                Text(
+                    text = stringResource(id = R.string.is_current_production_title),
+                    fontSize = 20.sp,
+                    textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 6.dp)
+                )
+
+                Text(
+                    text = if (tv?.inProduction == true) stringResource(
+                        id = R.string.yes
+                    ) else stringResource(id = R.string.no),
+                    fontSize = 16.sp,
+                    textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
+                    color = Color.White,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)
+                )
+            }
+
+            Text(
+                text = stringResource(id = R.string.detail_title),
+                fontSize = 20.sp,
+                textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 6.dp)
             )
 
             Text(
-                text = "Presupuesto: USD ${movie.budget}",
+                text = overview ?: ND_STRING,
                 fontSize = 16.sp,
                 textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
                 color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-            )
-
-            Text(
-                text = "Varios datos de la peli muchos muchos",
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 22.dp)
+                    .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)
             )
 
             Text(
                 text = stringResource(id = R.string.video_title),
-                fontSize = 14.sp,
+                fontSize = 20.sp,
+                textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 6.dp)
             )
 
             val youtubeSite = "YouTube"
-            movie.videos.firstOrNull()?.site?.let { site ->
+            videos?.firstOrNull()?.site?.let { site ->
                 if (youtubeSite == site) {
                     Log.d("DetailScreen", "Load Android View")
                     var youTubePlayerView: YouTubePlayerView? = null
-                    // Se probo YouTube library oficial, pero tiene varios bugs y no va bien con Compose ademas...
                     AndroidView(
                         modifier = Modifier,
                         factory = { it ->
@@ -196,9 +267,9 @@ fun DetailItem(
                                 override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                                     Log.d(
                                         "DetailScreen",
-                                        "Videos: ${movie.videos.size} ${movie.videos.firstOrNull()?.key ?: "error"}"
+                                        "Videos: ${videos.size} ${videos.firstOrNull()?.key ?: "error"}"
                                     )
-                                    movie.videos.firstOrNull()?.key?.let { key ->
+                                    videos.firstOrNull()?.key?.let { key ->
                                         youTubePlayer.cueVideo(
                                             key, 0f
                                         )
@@ -212,44 +283,52 @@ fun DetailItem(
                     DisposableEffect(key1 = youTubePlayerView) {
                         onDispose { youTubePlayerView?.release() }
                     }
+                } else {
+                    Text(
+                        text = stringResource(id = R.string.not_supported_format),
+                        fontSize = 14.sp,
+                        textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 32.dp)
+                    )
                 }
             } ?: run {
                 Text(
-                    text = "Formato no soportado",
+                    text = stringResource(id = R.string.video_error_generic),
                     fontSize = 14.sp,
+                    textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 32.dp)
                 )
             }
-
-            Text(
-                text = "Otros datos de la peli muchos muchos",
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 32.dp)
-            )
-
-            Text(
-                text = "Poner algo mas para mostrar el scroll y la animaction de la barra top",
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 22.dp)
-            )
+            if (videos?.isEmpty() == true) {
+                Box(Modifier.heightIn(min = 40.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.no_videos),
+                        fontSize = 14.sp,
+                        textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                    )
+                }
+            }
         }
     } ?: run {
         Text(
-            text = "Error: movieData vacia",
+            text = stringResource(id = R.string.error_generic),
             fontSize = 14.sp,
+            textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         )
     }
+
     FadingTopBar(
-        title = "${movie?.title}",
+        title = title ?: "",
         modifier = Modifier,
         scrollState = scrollState,
         navigateUp = navigateUp

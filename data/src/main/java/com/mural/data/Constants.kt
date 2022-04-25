@@ -25,7 +25,7 @@ class Constants {
         const val TV_SHOW_DETAIL_URL =
             "tv/{$TV_SHOW_ID}?api_key=$API_KEY"
         const val TV_SHOW_VIDEOS_URL =
-            "tv/{${TV_SHOW_ID}/videos?api_key=$API_KEY"
+            "tv/{$TV_SHOW_ID}/videos?api_key=$API_KEY"
         const val SEARCH_TV_SHOW =
             "search/tv?api_key=$API_KEY"
     }

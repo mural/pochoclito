@@ -30,7 +30,7 @@ fun MovieScreen(movieViewModel: MovieViewModel, navController: NavController) {
         SearchView(textState)
         Box() {
             MovieList(viewModel = movieViewModel, navController = navController)
-            SearchList(navController = navController, state = textState)
+            SearchList(navController = navController, state = textState, itemType = Watchable.MOVIE)
         }
     }
 }
@@ -57,7 +57,7 @@ fun MovieInfoList(
         items(moviesListItems) { movie ->
             movie?.let {
                 ItemRow(
-                    title = "${movie.title} (${movie.movieId})",
+                    title = "${movie.title}",
                     subtitle = "${stringResource(id = R.string.popularity)}: ${movie.popularity?.toInt()} <> ${stringResource(id = R.string.top_rated)}: ${movie.voteAverage}",
                     imagePath = movie.backdropPath,
                     navController = navController,

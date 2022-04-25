@@ -26,10 +26,10 @@ interface RemoteApiService {
     suspend fun getTopTvShows(@Query("page") page: Int): Response<TvShowResponse>
 
     @GET(Constants.TV_SHOW_DETAIL_URL)
-    suspend fun getTvShowDetail(@Path(Constants.MOVIE_ID) id: Long): Response<TvShowData>
+    suspend fun getTvShowDetail(@Path(Constants.TV_SHOW_ID) id: Long): Response<TvShowData>
 
     @GET(Constants.TV_SHOW_VIDEOS_URL)
-    suspend fun getTvShowVideos(@Path(Constants.MOVIE_ID) id: Long): Response<VideoResponse>
+    suspend fun getTvShowVideos(@Path(Constants.TV_SHOW_ID) id: Long): Response<VideoResponse>
 
     @GET(Constants.SEARCH_TV_SHOW)
     suspend fun searchTvShow(@Query("query") query: String): Response<TvShowResponse>

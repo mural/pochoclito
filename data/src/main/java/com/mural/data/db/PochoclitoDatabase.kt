@@ -10,7 +10,7 @@ import com.mural.data.dto.VideoData
 
 private const val DB_NAME = "pochoclito_database"
 
-@Database(entities = [(MovieData::class), (TvShowData::class), (VideoData::class)], version = 20)
+@Database(entities = [(MovieData::class), (TvShowData::class), (VideoData::class)], version = 22)
 abstract class PochoclitoDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao

@@ -4,10 +4,20 @@
     <string name="popularity">Popularidad</string>
     <string name="top_rated">Puntaje</string>
 
-    <string name="video_title">Video</string>
+    <string name="detail_title">Sipnosis</string>
+    <string name="date_title">Fecha estreno</string>
+    <string name="budget_title">Presupuesto (en USD)</string>
+    <string name="is_current_production_title">En produccion</string>
+    <string name="video_title">Video promocional</string>
+    <string name="no_videos">Sin videos actualmente</string>
+
+    <string name="yes">Si</string>
+    <string name="no">No</string>
 
     <string name="loading_wait">Cargando, espere por favor</string>
     <string name="no_image">Sin imagen</string>
     <string name="retry">Reintentar</string>
+    <string name="video_error_generic">Error al cargar el video.</string>
     <string name="error_generic">Se produjo un error.</string>
+    <string name="not_supported_format">Formato no soportado</string>
 </resources>

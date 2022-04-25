@@ -3,6 +3,7 @@ package com.mural.domain
 data class TvShow(
     val tvId: Long,
     val name: String?,
+    val overview: String?,
     val backdropPath: String?,
     val popularity: Double?,
     val voteAverage: Double?,

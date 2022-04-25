@@ -26,8 +26,11 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.mural.domain.Movie
+import com.mural.domain.TvShow
+import com.mural.domain.Watchable
 import com.mural.pochoclito.ui.PochoclitoScreen
 import com.mural.pochoclito.viewmodel.MovieViewModel
+import com.mural.pochoclito.viewmodel.TvShowsViewModel
 
 
 @Composable
@@ -54,7 +57,8 @@ fun SearchView(state: MutableState<TextFieldValue>) {
                 IconButton(
                     onClick = {
                         state.value =
-                            TextFieldValue("") // Remove text from TextField when you press the 'X' icon
+                            TextFieldValue("")
+                        // Remove text from TextField when you press the 'X' icon
                     }
                 ) {
                     Icon(
@@ -68,13 +72,13 @@ fun SearchView(state: MutableState<TextFieldValue>) {
             }
         },
         singleLine = true,
-        shape = RectangleShape, // The TextFiled has rounded corners top left and right by default
+        shape = RectangleShape,
         colors = TextFieldDefaults.textFieldColors(
             textColor = Color.White,
             cursorColor = Color.White,
             leadingIconColor = Color.White,
             trailingIconColor = Color.White,
-            backgroundColor = Color.Black,
+            backgroundColor = Color.DarkGray,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent
@@ -110,20 +114,44 @@ fun SearchListItemPreview() {
 }
 
 @Composable
-fun SearchList(navController: NavController, state: MutableState<TextFieldValue>) {
+fun SearchList(
+    navController: NavController,
+    state: MutableState<TextFieldValue>,
+    itemType: Watchable = Watchable.MOVIE,
+) {
 
     val movieViewModel: MovieViewModel = hiltViewModel()
-    val moviesListItems: LazyPagingItems<Movie> =
-        movieViewModel.searchMovieByName(state.value.text).collectAsLazyPagingItems()
+    val tvShowsViewModel: TvShowsViewModel = hiltViewModel()
+    var moviesListItems: LazyPagingItems<Movie>? = null
+    var tvListItems: LazyPagingItems<TvShow>? = null
+    if (Watchable.MOVIE == itemType) {
+        moviesListItems =
+            movieViewModel.searchMovieByName(state.value.text).collectAsLazyPagingItems()
+    } else {
+        tvListItems =
+            tvShowsViewModel.searchTvShowByName(state.value.text).collectAsLazyPagingItems()
+    }
 
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        items(moviesListItems) { filteredMovie ->
-            SearchListItem(
-                text = "${filteredMovie?.title} (${filteredMovie?.releaseDate})",
-                onItemClick = {
-                    navController.navigate("${PochoclitoScreen.Details.name}/${filteredMovie?.movieId}")
-                }
-            )
+        moviesListItems?.let {
+            items(it) { filteredItem ->
+                SearchListItem(
+                    text = "${filteredItem?.title} (${filteredItem?.releaseDate})",
+                    onItemClick = {
+                        navController.navigate("${PochoclitoScreen.Details.name}/${filteredItem?.movieId}/${itemType.ordinal}")
+                    }
+                )
+            }
+        }
+        tvListItems?.let {
+            items(it) { filteredItem ->
+                SearchListItem(
+                    text = "${filteredItem?.name} (${filteredItem?.firstAirDate})",
+                    onItemClick = {
+                        navController.navigate("${PochoclitoScreen.Details.name}/${filteredItem?.tvId}/${itemType.ordinal}")
+                    }
+                )
+            }
         }
     }
 }
