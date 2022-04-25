@@ -54,11 +54,11 @@ class TvShowsRemoteMediator @Inject constructor
                 // Insert new TvShows into database, which invalidates the
                 // current PagingData, allowing Paging to present the updates
                 // in the DB.
-                tvShowDao.insertTvShows(response.body()!!.results)
+                response.body()?.let { tvShowDao.insertTvShows(it.results) }
             }
 
             MediatorResult.Success(
-                endOfPaginationReached = response.body()!!.page == response.body()!!.totalPages
+                endOfPaginationReached = response.body()?.page ?: 0 == response.body()?.totalPages ?: 0
             )
         } catch (e: IOException) {
             MediatorResult.Error(e)

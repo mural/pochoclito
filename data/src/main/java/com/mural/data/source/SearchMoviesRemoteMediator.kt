@@ -50,13 +50,13 @@ class SearchMoviesRemoteMediator @Inject constructor
                 // current PagingData, allowing Paging to present the updates
                 // in the DB.
                 response.body()?.let {
-                    movieDao.insertMovies(response.body()!!.results)
+                    movieDao.insertMovies(it.results)
                 }
             }
 
             var paginationEnd = true
             response.body()?.let {
-                paginationEnd = response.body()!!.page == response.body()!!.totalPages
+                paginationEnd = it.page == it.totalPages
             }
             MediatorResult.Success(
                 endOfPaginationReached = paginationEnd

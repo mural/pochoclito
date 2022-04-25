@@ -125,13 +125,14 @@ fun DetailItem(
     navigateUp: () -> Boolean
 ) {
     val scrollState = rememberScrollState()
+    val itemLoaded = if (Watchable.MOVIE == watchable) movie else tv
     val title = if (Watchable.MOVIE == watchable) movie?.title else tv?.name
     val overview = if (Watchable.MOVIE == watchable) movie?.overview else tv?.overview
     val image = if (Watchable.MOVIE == watchable) movie?.backdropPath else tv?.backdropPath
     val date = if (Watchable.MOVIE == watchable) movie?.releaseDate else tv?.firstAirDate
     val videos = if (Watchable.MOVIE == watchable) movie?.videos else tv?.videos
 
-    title?.let {
+    itemLoaded?.let {
         Column(
             Modifier
                 .padding(bottom = 24.dp)
@@ -139,7 +140,7 @@ fun DetailItem(
         ) {
             Box() {
                 image?.let {
-                    if (it.isNotBlank()) {
+                    if (title?.isNotBlank() == true) {
                         val imageLoaded = rememberCoilPainter(
                             request = "${IMAGE_BASE_URL}${image}",
                             fadeIn = true

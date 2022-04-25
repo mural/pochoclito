@@ -4,6 +4,7 @@
     <string name="popularity">Popularidad</string>
     <string name="top_rated">Puntaje</string>
 
+    <string name="no_items">Sin resultados, intente mas tarde</string>
     <string name="detail_title">Sipnosis</string>
     <string name="date_title">Fecha estreno</string>
     <string name="budget_title">Presupuesto (en USD)</string>

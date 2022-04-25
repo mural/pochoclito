@@ -53,11 +53,11 @@ class MoviesRemoteMediator @Inject constructor
                 // Insert new movies into database, which invalidates the
                 // current PagingData, allowing Paging to present the updates
                 // in the DB.
-                movieDao.insertMovies(response.body()!!.results)
+                response.body()?.let { movieDao.insertMovies(it.results) }
             }
 
             MediatorResult.Success(
-                endOfPaginationReached = response.body()!!.page == response.body()!!.totalPages
+                endOfPaginationReached = response.body()?.page ?: 0 == response.body()?.totalPages ?: 0
             )
         } catch (e: IOException) {
             MediatorResult.Error(e)
