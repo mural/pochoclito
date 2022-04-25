@@ -16,7 +16,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -149,7 +148,7 @@ fun DetailItem(
                             painter = imageLoaded,
                             contentDescription = null,
                             modifier = Modifier
-                                .width(480.dp)
+                                .fillMaxWidth()
                                 .heightIn(min = 100.dp, max = 300.dp)
                                 .clip(shape = RoundedCornerShape(0.dp))
                                 .padding(horizontal = 0.dp, vertical = 2.dp),
@@ -165,7 +164,6 @@ fun DetailItem(
                 text = stringResource(id = R.string.date_title),
                 fontSize = 20.sp,
                 textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
-                color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp, top = 20.dp, bottom = 6.dp)
@@ -175,7 +173,6 @@ fun DetailItem(
                 text = date ?: ND_STRING,
                 fontSize = 16.sp,
                 textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
-                color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)
@@ -186,7 +183,6 @@ fun DetailItem(
                     text = stringResource(id = R.string.budget_title),
                     fontSize = 20.sp,
                     textAlign = TextAlign.Start,
-                    color = Color.White,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 6.dp)
@@ -196,7 +192,6 @@ fun DetailItem(
                     text = if (movie?.budget == 0L) ND_STRING else "${movie?.budget ?: ND_STRING}",
                     fontSize = 16.sp,
                     textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
-                    color = Color.White,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)
@@ -206,7 +201,6 @@ fun DetailItem(
                     text = stringResource(id = R.string.is_current_production_title),
                     fontSize = 20.sp,
                     textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
-                    color = Color.White,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 6.dp)
@@ -218,7 +212,6 @@ fun DetailItem(
                     ) else stringResource(id = R.string.no),
                     fontSize = 16.sp,
                     textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
-                    color = Color.White,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)
@@ -238,7 +231,6 @@ fun DetailItem(
                 text = overview ?: ND_STRING,
                 fontSize = 16.sp,
                 textAlign = if (Watchable.MOVIE == watchable) TextAlign.Start else TextAlign.End,
-                color = Color.White,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 26.dp, end = 16.dp, top = 6.dp, bottom = 12.dp)

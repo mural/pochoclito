@@ -30,7 +30,6 @@ Como correr los tests:
 
 Mejoras pendientes
 - No soporta contenido apaisado 
-- No soporta tablets correctamente
 - No hay lint customizado
 - Database migration (auto migration)
 - Agregar una libreria de logs y reporte de errores

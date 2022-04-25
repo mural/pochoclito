@@ -54,6 +54,7 @@ fun FadingTopBar(
                     text = title,
                     fontSize = 22.sp,
                     textAlign = TextAlign.Start,
+                    color = Color.White,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .fillMaxWidth()

@@ -53,7 +53,7 @@ fun ItemRow(
                         painter = image,
                         contentDescription = null,
                         modifier = Modifier
-                            .width(480.dp)
+                            .fillMaxWidth()
                             .heightIn(min = 100.dp, max = 300.dp)
                             .clip(shape = RoundedCornerShape(0.dp))
                             .padding(horizontal = 0.dp, vertical = 2.dp),
