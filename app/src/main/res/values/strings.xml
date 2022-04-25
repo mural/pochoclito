@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Pochoclito</string>
+
+    <string name="popularity">Popularidad</string>
+    <string name="top_rated">Puntaje</string>
+
+    <string name="video_title">Video</string>
+
+    <string name="loading_wait">Cargando, espere por favor</string>
+    <string name="no_image">Sin imagen</string>
+    <string name="retry">Reintentar</string>
+    <string name="error_generic">Se produjo un error.</string>
+</resources>
