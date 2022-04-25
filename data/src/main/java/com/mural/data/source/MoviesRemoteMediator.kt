@@ -57,7 +57,7 @@ class MoviesRemoteMediator @Inject constructor
             }
 
             MediatorResult.Success(
-                endOfPaginationReached = response.body()?.page ?: 0 == response.body()?.totalPages ?: 0
+                endOfPaginationReached = lastPageRetrieved == response.body()?.totalPages ?: 0
             )
         } catch (e: IOException) {
             MediatorResult.Error(e)

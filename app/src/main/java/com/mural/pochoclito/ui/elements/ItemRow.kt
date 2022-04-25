@@ -62,7 +62,8 @@ fun ItemRow(
                 } else {
                     Text(text = stringResource(id = R.string.no_image))
                 }
-            } ?: run { Box(modifier = Modifier.height(200.dp)) { Text(text = stringResource(id = R.string.no_image)) } }
+            }
+                ?: run { Box(modifier = Modifier.height(200.dp)) { Text(text = stringResource(id = R.string.no_image)) } }
 
             Text(
                 text = subtitle,
@@ -81,7 +82,9 @@ fun ItemRow(
             fontSize = 22.sp,
             textAlign = if (RowAlignment.START == rowAlignment) TextAlign.Start else TextAlign.End,
             fontWeight = FontWeight.Bold,
+            color = Color.White,
             modifier = Modifier
+                .background(color = Color.Black.copy(alpha = 1.0f))
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 2.dp)
         )
