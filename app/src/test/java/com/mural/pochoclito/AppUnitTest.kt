@@ -82,20 +82,20 @@ class AppUnitTest {
         )
         baseMovieResponse = MovieResponse(
             page = 1,
-            total_pages = 10,
-            total_results = 500,
+            totalPages = 10,
+            totalResults = 500,
             results = listOf(movie1Cached, movie2Cached)
         )
         cachedMovieWithVideos =
             MovieWithVideos(
                 movie1Cached,
-                listOf(VideoData("1", 1L, "VideoData 1 de movieData 1 cached"))
+                listOf(VideoData("1", 1L, 1L, "VideoData 1 de movieData 1 cached"))
             )
 
         val movie1NetworkSuccess = MovieData(1L, title = "MovieData 1 network", budget = 100100)
         networkMovieWithVideos = MovieWithVideos(
             movie1NetworkSuccess,
-            listOf(VideoData("1", 1L, "VideoData 1 de movieData 1 network"))
+            listOf(VideoData("1", 1L, 1L, "VideoData 1 de movieData 1 network"))
         )
     }
 
@@ -109,13 +109,10 @@ class AppUnitTest {
     fun `Given getMovieDetails is called When no errors occurs Then Loading, Cache and Success states should be retrieved`() =
         coroutinesTestRule.testDispatcher.run() {
             val loadingResult = NetworkResult.Loading<MovieWithVideos>()
-            val cachedResult = NetworkResult.Cached(cachedMovieWithVideos)
             val networkResult = NetworkResult.Success(cachedMovieWithVideos)
 
             val movieFlowLoading: Flow<NetworkResult<MovieWithVideos>> =
                 flow { emit(loadingResult) }
-            val movieFlowCached: Flow<NetworkResult<MovieWithVideos>> =
-                flow { emit(cachedResult) }
             val movieFlowNetworkSuccess: Flow<NetworkResult<MovieWithVideos>> =
                 flow { emit(networkResult) }
 
@@ -127,7 +124,6 @@ class AppUnitTest {
             //Given a movieData
             coEvery { movieRepository.getMovie(1L) } returns merge(
                 movieFlowLoading,
-                movieFlowCached,
                 movieFlowNetworkSuccess
             )
 
@@ -137,7 +133,6 @@ class AppUnitTest {
             stateObserver.assertAllEmitted(
                 listOf(
                     loadingResult,
-                    cachedResult,
                     networkResult
                 ).map { it ->
                     when (it) {

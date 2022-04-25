@@ -24,13 +24,6 @@ class MovieRepository @Inject constructor(
     suspend fun getMovie(movieId: Long): Flow<NetworkResult<MovieWithVideos>> {
         Log.d("Repository", "Call cached")
         val cachedMovie = movieDao.getMovie(movieId).first()
-        val cachedFlow = flow<NetworkResult<MovieWithVideos>> {
-            movieDao.getMovieAndVideos(movieId).collect {
-                Log.d("Repository", "Emitting cached result")
-                emit(NetworkResult.Cached(it))
-            }
-        }
-
         val networkFlow = flow {
             Log.d("Repository", "Call network")
             val resultMovies = safeApiCallWithData(data = cachedMovie) {
@@ -55,9 +48,6 @@ class MovieRepository @Inject constructor(
                     NetworkResult.Error(resultMovies.message ?: "", movieWithVideos)
                 }
 
-            Log.d("Repository", "Emitting network result")
-            emit(resultMoviesWithVideo)
-
             if (resultMovies is NetworkResult.Success) {
                 Log.d("Repository", "NetworkResult.Success")
                 resultMovies.data?.run {
@@ -77,9 +67,11 @@ class MovieRepository @Inject constructor(
             } else {
                 Log.d("Repository", "NetworkResult ${resultMovies.message}")
             }
+            Log.d("Repository", "Emitting network result")
+            emit(resultMoviesWithVideo)
         }.flowOn(dispatcher)
 
-        return merge(cachedFlow, networkFlow)
+        return networkFlow
     }
 
 }

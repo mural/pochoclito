@@ -125,7 +125,7 @@ fun DetailItem(
     navigateUp: () -> Boolean
 ) {
     val scrollState = rememberScrollState()
-    val itemLoaded = if (Watchable.MOVIE == watchable) movie else tv
+    val itemLoaded: Any? = if (Watchable.MOVIE == watchable) movie else tv
     val title = if (Watchable.MOVIE == watchable) movie?.title else tv?.name
     val overview = if (Watchable.MOVIE == watchable) movie?.overview else tv?.overview
     val image = if (Watchable.MOVIE == watchable) movie?.backdropPath else tv?.backdropPath
@@ -254,35 +254,33 @@ fun DetailItem(
             )
 
             val youtubeSite = "YouTube"
+            Log.d("DetailScreen", "check Videos ${videos?.size}")
             videos?.firstOrNull()?.site?.let { site ->
                 if (youtubeSite == site) {
-                    Log.d("DetailScreen", "Load Android View")
-                    var youTubePlayerView: YouTubePlayerView? = null
-                    AndroidView(
-                        modifier = Modifier,
-                        factory = { it ->
-                            Log.d("DetailScreen", "init youTubePlayerView")
-                            youTubePlayerView = YouTubePlayerView(it)
-                            youTubePlayerView?.getYouTubePlayerWhenReady(object :
-                                YouTubePlayerCallback {
-                                override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
-                                    Log.d(
-                                        "DetailScreen",
-                                        "Videos: ${videos.size} ${videos.firstOrNull()?.key ?: "error"}"
-                                    )
-                                    videos.firstOrNull()?.key?.let { key ->
+                    val videoKey = videos.firstOrNull()?.key
+                    Log.d("DetailScreen", "Load Android View $videoKey")
+                    videoKey?.let { key ->
+                        var youTubePlayerView: YouTubePlayerView? = null
+                        AndroidView(
+                            modifier = Modifier,
+                            factory = {
+                                Log.d("DetailScreen", "init youTubePlayerView")
+                                youTubePlayerView = YouTubePlayerView(it)
+                                youTubePlayerView?.getYouTubePlayerWhenReady(object :
+                                    YouTubePlayerCallback {
+                                    override fun onYouTubePlayer(youTubePlayer: YouTubePlayer) {
                                         youTubePlayer.cueVideo(
                                             key, 0f
                                         )
                                     }
-                                }
-                            })
-                            youTubePlayerView!!
-                        },
-                        update = { },
-                    )
-                    DisposableEffect(key1 = youTubePlayerView) {
-                        onDispose { youTubePlayerView?.release() }
+                                })
+                                youTubePlayerView!!
+                            },
+                            update = { },
+                        )
+                        DisposableEffect(key1 = youTubePlayerView) {
+                            onDispose { youTubePlayerView?.release() }
+                        }
                     }
                 } else {
                     Text(

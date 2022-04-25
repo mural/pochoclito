@@ -24,13 +24,6 @@ class TvShowRepository @Inject constructor(
     suspend fun getTvShow(tvShowId: Long): Flow<NetworkResult<TvShowWithVideos>> {
         Log.d("Repository", "Call cached")
         val cachedTvShow = TvShowDao.getTvShow(tvShowId).first()
-        val cachedFlow = flow<NetworkResult<TvShowWithVideos>> {
-            TvShowDao.getTvShowAndVideos(tvShowId).collect {
-                Log.d("Repository", "Emitting cached result")
-                emit(NetworkResult.Cached(it))
-            }
-        }
-
         val networkFlow = flow {
             Log.d("Repository", "Call network")
             val resultTvShows = safeApiCallWithData(data = cachedTvShow) {
@@ -55,9 +48,6 @@ class TvShowRepository @Inject constructor(
                     NetworkResult.Error(resultTvShows.message ?: "", tvShowWithVideos)
                 }
 
-            Log.d("Repository", "Emitting network result")
-            emit(resultTvShowsWithVideo)
-
             if (resultTvShows is NetworkResult.Success) {
                 Log.d("Repository", "NetworkResult.Success")
                 resultTvShows.data?.run {
@@ -77,9 +67,11 @@ class TvShowRepository @Inject constructor(
             } else {
                 Log.d("Repository", "NetworkResult ${resultTvShows.message}")
             }
+            Log.d("Repository", "Emitting network result")
+            emit(resultTvShowsWithVideo)
         }.flowOn(dispatcher)
 
-        return merge(cachedFlow, networkFlow)
+        return networkFlow
     }
 
 }
