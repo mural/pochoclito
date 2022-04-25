@@ -105,6 +105,9 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     androidTestImplementation "com.google.dagger:hilt-android-testing:2.38.1"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    androidTestImplementation('com.adevinta.android:barista:4.2.0') {
+        exclude group: 'org.jetbrains.kotlin' // Only if you already use Kotlin in your project
+    }
 
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
