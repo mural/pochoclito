@@ -37,3 +37,5 @@ Mejoras pendientes
 - Agregar Styles in compose
 - Carga de red luego que detecta conexion
 - Pull to refresh
+
+![appimage](https://user-images.githubusercontent.com/759739/165100785-e861f02c-923e-4888-a79e-fa82bb3b9aea.jpeg)
